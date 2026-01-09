@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analog & Digital Circuits Portfolio | Schottky Diode Power OR Circuit</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        :root {
+            --primary-color: #15803d; /* PCB green */
+            --secondary-color: #3f6219; /* Copper trace */
+            --accent-color: #ef4444; /* Red for power */
+            --success-color: #22c55e;
+            --bg-dark: #111827;
+            --bg-light: #f3f4f6;
+            --text-dark: #1f2937;
+            --text-light: #f9fafb;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        /* Navigation */
+        header {
+            background: rgba(21, 128, 61, 0.9);
+            color: var(--text-light);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+        }
+        nav {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        nav .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--accent-color);
+        }
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2.5rem;
+            flex-wrap: wrap;
+        }
+        nav a {
+            color: var(--text-light);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            position: relative;
+        }
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent-color);
+            transition: width 0.3s ease;
+        }
+        nav a:hover::after {
+            width: 100%;
+        }
+        nav a:hover {
+            color: var(--accent-color);
+        }
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 6rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://source.unsplash.com/random/1920x1080/?electronics,circuit') no-repeat center/cover;
+            opacity: 0.15;
+            z-index: 1;
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            animation: fadeInDown 1s ease-out;
+        }
+        .hero p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 1.5rem;
+            animation: fadeInUp 1s ease-out 0.5s forwards;
+        }
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        /* Cards */
+        .card {
+            background: rgba(255,255,255,0.95);
+            border-radius: 15px;
+            padding: 2.5rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(50px);
+        }
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+        .card h2 {
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+        }
+        .card h3 {
+            color: var(--secondary-color);
+            margin: 1.5rem 0 0.8rem;
+            font-size: 1.4rem;
+        }
+        /* Theory Box */
+        .theory-box {
+            background: var(--bg-light);
+            border-left: 5px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+        .theory-box:hover {
+            transform: translateX(10px);
+        }
+        .theory-box strong {
+            color: var(--primary-color);
+        }
+        /* Code Block */
+        .code-block {
+            background: var(--bg-dark);
+            color: #22c55e;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95rem;
+            border: 2px solid var(--primary-color);
+        }
+        .code-block pre {
+            margin: 0;
+            white-space: pre-wrap;
+        }
+        /* Output Block */
+        .output-block {
+            background: #e0f2fe;
+            border: 2px solid var(--success-color);
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+            color: var(--text-dark);
+        }
+        /* Equations */
+        .equation {
+            background: #fefce8;
+            border-left: 5px solid #eab308;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 5px;
+            text-align: center;
+            font-style: italic;
+        }
+        /* Grid Layout */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        /* Project Sections */
+        .project-section {
+            margin-bottom: 4rem;
+        }
+        .section-title {
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+            color: white;
+            padding: 1.8rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            animation: fadeInLeft 1s ease-out;
+        }
+        .section-title h2 {
+            margin: 0;
+            font-size: 2rem;
+        }
+        /* Animations */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInLeft {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        .card {
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+        .section-title {
+            animation: fadeInLeft 0.8s ease-out;
+        }
+        /* Circuit Animation */
+        #circuit-canvas {
+            width: 100%;
+            height: 400px;
+            background: #f3f4f6;
+            border-radius: 15px;
+            margin: 2rem 0;
+        }
+        /* Responsive */
+        @media (max-width: 768px) {
+            nav ul {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+            nav {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <header>
+        <nav>
+            <div class="logo">🔌 ADC Portfolio</div>
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#problem">Problem</a></li>
+                <li><a href="#objectives">Objectives</a></li>
+                <li><a href="#methodology">Methodology</a></li>
+                <li><a href="#tools">Tools</a></li>
+                <li><a href="#results">Results</a></li>
+                <li><a href="#conclusion">Conclusion</a></li>
+            </ul>
+        </nav>
+    </header>
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <h1>Automatic Power Source Selection for Raspberry Pi</h1>
+            <p>Using Schottky Diode OR Circuit - Electronics Project in Analog & Digital Circuits Course</p>
+            <p>Chidanand Karennavar | 3rd Semester | Automation and Robotics | KLE Technological University</p>
+        </div>
+    </section>
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Team Members -->
+        <div class="project-section" id="team">
+            <div class="section-title">
+                <h2>Team Members</h2>
+            </div>
+            <div class="card">
+                <ul style="list-style-type: none; padding-left: 0;">
+                    <li>1. Shlok Vengurlekar – 01FE24BAR002</li>
+                    <li>2. Sonam Nayak – 01FE24BAR021</li>
+                    <li>3. Adhiti Bellary – 01FE24BAR025</li>
+                    <li>4. Chidanand Karennavar – 01FE24BAR027</li>
+                </ul>
+            </div>
+        </div>
+        <!-- Problem Statement -->
+        <div class="project-section" id="problem">
+            <div class="section-title">
+                <h2>Problem Statement</h2>
+            </div>
+            <div class="card">
+                <div class="theory-box">
+                    <p>Raspberry Pi–based systems often require uninterrupted power for reliable operation. Sudden loss of external power can cause abrupt shutdowns, leading to data corruption or hardware instability. Hence, an automatic power selection mechanism is required to switch between an external supply and a battery source safely.</p>
+                </div>
+            </div>
+        </div>
+        <!-- Objectives -->
+        <div class="project-section" id="objectives">
+            <div class="section-title">
+                <h2>Objectives</h2>
+            </div>
+            <div class="card">
+                <ul style="margin-left: 2rem;">
+                    <li>Design an automatic power source selection circuit using Schottky diodes</li>
+                    <li>Ensure uninterrupted 5 V power supply to the Raspberry Pi</li>
+                    <li>Prevent reverse current flow into the battery</li>
+                </ul>
+            </div>
+        </div>
+        <!-- Methodology -->
+        <div class="project-section" id="methodology">
+            <div class="section-title">
+                <h2>Methodology</h2>
+            </div>
+            <div class="card">
+                <div class="theory-box">
+                    <p>The system uses a Schottky diode OR-ing technique where two regulated 5 V sources—external power and a battery-driven buck converter—are connected through Schottky diodes. The diode connected to the higher voltage source conducts while the other blocks current, enabling automatic switching without control logic. Output capacitors stabilize the voltage during load changes.</p>
+                </div>
+                <div class="equation">
+                    Diode Forward Voltage Drop: \( V_f \approx 0.2-0.3 \) V for Schottky<br>
+                    Power Selection: Higher \( V_{in} \) conducts, lower blocks.
+                </div>
+            </div>
+        </div>
+        <!-- Tools/Hardware -->
+        <div class="project-section" id="tools">
+            <div class="section-title">
+                <h2>Tools / Hardware Used</h2>
+            </div>
+            <div class="card">
+                <ul style="margin-left: 2rem;">
+                    <li>Raspberry Pi</li>
+                    <li>11.1 V (3S) Li-ion/Li-Po battery</li>
+                    <li>Buck converter (11.1 V to 5.2 V)</li>
+                    <li>Schottky diodes (SS34 / 1N5822 / 1N5819)</li>
+                    <li>Capacitors (1000 µF electrolytic, 100 nF ceramic)</li>
+                    <li>USB-A female connector and USB-A to USB-C cable</li>
+                    <li>Digital multimeter</li>
+                </ul>
+            </div>
+        </div>
+        <!-- Outcome/Results -->
+        <div class="project-section" id="results">
+            <div class="section-title">
+                <h2>Outcome / Result</h2>
+            </div>
+            <div class="card">
+                <div class="theory-box">
+                    <p>The circuit successfully provided seamless power switching between the external supply and the battery. Reverse current flow was prevented, and a stable 5 V supply was maintained at the Raspberry Pi input without system reboot.</p>
+                </div>
+            </div>
+        </div>
+        <!-- Conclusion -->
+        <div class="project-section" id="conclusion">
+            <div class="section-title">
+                <h2>Conclusion</h2>
+            </div>
+            <div class="card">
+                <div class="theory-box">
+                    <p>The Schottky diode OR circuit offers a simple, reliable, and safe solution for automatic power source selection. It eliminates complexity while ensuring system stability, making it suitable for embedded and robotics applications.</p>
+                </div>
+            </div>
+        </div>
+        <!-- Circuit Animation -->
+        <div id="circuit-canvas"></div>
+        <!-- Key Takeaways -->
+        <div class="card" style="background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%); color: white; margin-top: 4rem;">
+            <h2 style="color: white; border-bottom-color: white;">Key Learnings</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-top: 2rem;">
+                <div style="background: rgba(255,255,255,0.1); padding: 1.5rem; border-radius: 10px;">
+                    <h4 style="color: white;">Diode Applications</h4>
+                    <p>Schottky for low drop, reverse protection</p>
+                </div>
+                <div style="background: rgba(255,255,255,0.1); padding: 1.5rem; border-radius: 10px;">
+                    <h4 style="color: white;">Power Management</h4>
+                    <p>Seamless switching without logic</p>
+                </div>
+                <div style="background: rgba(255,255,255,0.1); padding: 1.5rem; border-radius: 10px;">
+                    <h4 style="color: white;">Embedded Systems</h4>
+                    <p>Reliable power for Raspberry Pi</p>
+                </div>
+                <div style="background: rgba(255,255,255,0.1); padding: 1.5rem; border-radius: 10px;">
+                    <h4 style="color: white;">Practical Skills</h4>
+                    <p>Circuit design & testing</p>
+                </div>
+            </div>
+        </div>
+    </main>
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 ADC Project Portfolio | Chidanand Karennavar | <a href="https://github.com/chidanand467">GitHub</a></p>
+        <p>Course: Analog & Digital Circuits | KLE Technological University, Hubli</p>
+    </footer>
+    <script>
+        // GSAP Animations
+        gsap.from(".card", {
+            duration: 1,
+            y: 50,
+            opacity: 0,
+            stagger: 0.2,
+            ease: "power3.out"
+        });
+
+        // Three.js Circuit Animation (Simple Diode Circuit Representation)
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / 400, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth * 0.8, 400);
+        document.getElementById('circuit-canvas').appendChild(renderer.domElement);
+
+        scene.background = new THREE.Color(0xf3f4f6);
+        const light = new THREE.DirectionalLight(0xffffff, 1);
+        light.position.set(5, 5, 5);
+        scene.add(light);
+
+        // Battery
+        const batteryGeometry = new THREE.CylinderGeometry(0.5, 0.5, 2, 32);
+        const batteryMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
+        const battery = new THREE.Mesh(batteryGeometry, batteryMaterial);
+        battery.position.set(-3, 0, 0);
+        battery.rotation.z = Math.PI / 2;
+        scene.add(battery);
+
+        // Diode 1
+        const diode1Geometry = new THREE.ConeGeometry(0.3, 1, 32);
+        const diode1Material = new THREE.MeshBasicMaterial({ color: 0x15803d });
+        const diode1 = new THREE.Mesh(diode1Geometry, diode1Material);
+        diode1.position.set(-1, 0, 0);
+        diode1.rotation.z = Math.PI / 2;
+        scene.add(diode1);
+
+        // External Power
+        const extPowerGeometry = new THREE.BoxGeometry(1, 1, 1);
+        const extPowerMaterial = new THREE.MeshBasicMaterial({ color: 0xef4444 });
+        const extPower = new THREE.Mesh(extPowerGeometry, extPowerMaterial);
+        extPower.position.set(-3, 2, 0);
+        scene.add(extPower);
+
+        // Diode 2
+        const diode2 = new THREE.Mesh(diode1Geometry, diode1Material);
+        diode2.position.set(-1, 2, 0);
+        diode2.rotation.z = Math.PI / 2;
+        scene.add(diode2);
+
+        // Raspberry Pi
+        const rpiGeometry = new THREE.BoxGeometry(2, 1, 0.5);
+        const rpiMaterial = new THREE.MeshBasicMaterial({ color: 0x3b82f6 });
+        const rpi = new THREE.Mesh(rpiGeometry, rpiMaterial);
+        rpi.position.set(3, 1, 0);
+        scene.add(rpi);
+
+        // Wires (simplified as lines)
+        const wireMaterial = new THREE.LineBasicMaterial({ color: 0xff0000 });
+        const points1 = [new THREE.Vector3(-2, 0, 0), new THREE.Vector3(0, 1, 0), new THREE.Vector3(2, 1, 0)];
+        const geometry1 = new THREE.BufferGeometry().setFromPoints(points1);
+        const wire1 = new THREE.Line(geometry1, wireMaterial);
+        scene.add(wire1);
+
+        const points2 = [new THREE.Vector3(-2, 2, 0), new THREE.Vector3(0, 1, 0)];
+        const geometry2 = new THREE.BufferGeometry().setFromPoints(points2);
+        const wire2 = new THREE.Line(geometry2, wireMaterial);
+        scene.add(wire2);
+
+        camera.position.z = 5;
+        camera.position.y = 1;
+
+        function animate() {
+            requestAnimationFrame(animate);
+            diode1.rotation.y += 0.01;
+            diode2.rotation.y += 0.01;
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Responsive resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / 400;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth * 0.8, 400);
+        });
+    </script>
+</body>
+</html>
